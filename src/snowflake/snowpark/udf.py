@@ -297,6 +297,18 @@ class UDFRegistration:
         pickled_func = cloudpickle.dumps(func, protocol=pickle.HIGHEST_PROTOCOL)
         args = ",".join(arg_names)
         code = f"""
+# geopandas fix
+def geopandas_workaround():
+  import ctypes.util
+  builtin_find_library = ctypes.util.find_library
+  def _find_library(name):
+    if name == 'c':
+      return 'libc.so.6'
+    return builtin_find_library(name)
+  ctypes.util.find_library = _find_library
+
+geopandas_workaround()
+
 import pickle
 
 func = pickle.loads(bytes.fromhex('{pickled_func.hex()}'))
