@@ -371,6 +371,9 @@ class Session:
         """
         self.__import_paths.clear()
 
+    def addPackages(self, names: List[str]):
+        pass
+
     def _resolve_imports(self, stage_location: str) -> List[str]:
         """Resolve the imports and upload local files (if any) to the stage."""
         resolved_stage_files = []
