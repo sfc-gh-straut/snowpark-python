@@ -180,6 +180,7 @@ class UDFRegistration:
         return_type: Optional[DataType] = None,
         input_types: Optional[List[DataType]] = None,
         name: Optional[str] = None,
+        stage_location: Optional[str] = None,
     ) -> UserDefinedFunction:
         """
         Registers a Python function as a Snowflake Python UDF and returns the UDF.
@@ -213,7 +214,9 @@ class UDFRegistration:
             ) = self.__get_types_from_type_hints(func)
 
         # register udf
-        self.__do_register_udf(func, new_return_type, new_input_types, udf_name)
+        self.__do_register_udf(
+            func, new_return_type, new_input_types, udf_name, stage_location
+        )
         return UserDefinedFunction(
             func, return_type, new_input_types, udf_name, is_return_nullable
         )

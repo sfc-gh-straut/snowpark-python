@@ -643,3 +643,22 @@ def test_udf_variant_type(session):
         Row("<class 'list'>"),
         Row("<class 'dict'>"),
     ]
+
+
+def test_permanent_udf(session):
+    stage_name = Utils.random_stage_name()
+    udf_name = Utils.random_name()
+    try:
+        Utils.create_stage(session, stage_name, is_temporary=False)
+        udf(
+            lambda x, y: x + y,
+            return_type=IntegerType(),
+            input_types=[IntegerType(), IntegerType()],
+            name=udf_name,
+            is_permanent=True,
+            stage_location=stage_name,
+        )
+        assert session.sql(f"select {udf_name}(8, 9)").collect() == [Row(17)]
+    finally:
+        session._run_query(f"drop function if exists {udf_name}(int, int)")
+        Utils.drop_stage(session, stage_name)

@@ -696,6 +696,8 @@ def udf(
     return_type: Optional[DataType] = None,
     input_types: Optional[List[DataType]] = None,
     name: Optional[str] = None,
+    is_permanent: bool = False,
+    stage_location: Optional[str] = None,
 ) -> Union[UserDefinedFunction, functools.partial]:
     """Registers a Python function as a Snowflake Python UDF and returns the UDF.
 
@@ -741,15 +743,21 @@ def udf(
     if not session:
         raise SnowparkClientExceptionMessages.SERVER_NO_DEFAULT_SESSION()
 
+    if is_permanent and not stage_location:
+        raise ValueError("stage_location must be specified for permanent udf")
+
     if func is None:
         return functools.partial(
             session.udf.register,
             return_type=return_type,
             input_types=input_types,
             name=name,
+            stage_location=stage_location,
         )
     else:
-        return session.udf.register(func, return_type, input_types, name)
+        return session.udf.register(
+            func, return_type, input_types, name, stage_location
+        )
 
 
 def __with_aggregate_function(
