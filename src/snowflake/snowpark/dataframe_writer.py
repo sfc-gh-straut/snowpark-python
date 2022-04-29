@@ -124,7 +124,7 @@ class DataFrameWriter:
         file_format_type: Optional[str] = None,
         format_type_options: Optional[Dict[str, str]] = None,
         header: bool = False,
-        **copy_options: Optional[str],
+        **copy_options: Optional[Union[str, bool]],
     ) -> None:
         """Executes a `COPY INTO <location> <https://docs.snowflake.com/en/sql-reference/sql/copy-into-location.html>`__ to unload data from a ``DataFrame`` into one or more files in a stage or external stage.
 

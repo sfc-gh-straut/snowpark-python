@@ -1588,3 +1588,24 @@ def test_unpivot(session, column_list):
         ],
         sort=False,
     )
+
+
+def test_standard_scaler(session):
+    from snowflake.snowpark.ml.transformer import StandardScaler
+
+    df = session.create_dataframe([[0, 0], [0, 0], [1, 1], [1, 0]], schema=["a", "b"])
+
+    model = StandardScaler()
+    model.fit(df)
+    session.table(model._fitted_table_name).show()
+
+    model.transform(df).show()
+    df2 = session.create_dataframe([[2, 2]], schema=["a", "b"])
+    model.transform(df2).show()
+
+    model.save("/home/jdu/test_model")
+
+    model2 = StandardScaler()
+    model2.load("/home/jdu/test_model")
+    session.table(model2._fitted_table_name).show()
+    model2.transform(df2).show()
