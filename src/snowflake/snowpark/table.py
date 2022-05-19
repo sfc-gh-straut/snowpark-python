@@ -383,6 +383,7 @@ class Table(DataFrame):
                 else None,
             )
         )
+        new_df._plan.api_calls.append({"name": "Table.update"})
         return _get_update_result(new_df._internal_collect_with_tag())
 
     @df_action_telemetry
@@ -443,6 +444,7 @@ class Table(DataFrame):
                 else None,
             )
         )
+        new_df._plan.api_calls.append({"name": "Table.delete"})
         return _get_delete_result(new_df._internal_collect_with_tag())
 
     @df_action_telemetry
@@ -508,6 +510,7 @@ class Table(DataFrame):
                 merge_exprs,
             )
         )
+        new_df._plan.api_calls.append({"name": "Table.merge"})
         return _get_merge_result(
             new_df._internal_collect_with_tag(),
             inserted=inserted,
