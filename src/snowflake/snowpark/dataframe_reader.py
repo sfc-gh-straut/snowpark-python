@@ -5,6 +5,7 @@
 from typing import Dict, Iterable, Union
 
 import snowflake.snowpark
+from snowflake.connector.telemetry import TelemetryField
 from snowflake.snowpark._internal.analyzer.analyzer_utils import (
     create_file_format_statement,
     drop_file_format_if_exists_statement,
@@ -264,7 +265,7 @@ class DataFrameReader:
             ),
         )
         df._reader = self
-        df._plan.api_calls = [{"name": "DataFrameReader.csv"}]
+        df._plan.api_calls = [{TelemetryField.NAME.value: "DataFrameReader.csv"}]
         return df
 
     def json(self, path: str) -> DataFrame:
@@ -442,5 +443,7 @@ class DataFrameReader:
             ),
         )
         df._reader = self
-        df._plan.api_calls = [{"name": f"DataFrameReader.{format.lower()}"}]
+        df._plan.api_calls = [
+            {TelemetryField.NAME.value: f"DataFrameReader.{format.lower()}"}
+        ]
         return df
